@@ -10,21 +10,23 @@ public class Main {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
 
-        // Solicita a entrada no formato: {P -> Q, R ^ S, S -> Q}
+
         System.out.println("Digite as proposições (ex: {P -> Q, R ^ S, S -> Q}): ");
         String entrada = scan.nextLine();
 
-        // Remove espaços e as chaves inicial e final
+        // Remove espaços e reconhece inicial e final
         String conteudo = entrada.trim();
         if (conteudo.startsWith("{") && conteudo.endsWith("}")) {
             conteudo = conteudo.substring(1, conteudo.length() - 1);
         }
 
-        // Divide as operações pela vírgula
+
         String[] operacoes = conteudo.split(",");
 
-        // Expressão regular para capturar: variavel1, operador e variavel2
-        Pattern pattern = Pattern.compile("\\s*(\\w+)\\s*(->|\\^|\\|)\\s*(\\w+)\\s*");
+        // variavel1, operador e variavel2
+        Pattern pattern = Pattern.compile("\\s*(\\w+)\\s*(->|\\^|\\||<->|V)\\s*(\\w+)\\s*");
+
+
 
         // Lista para armazenar cada expressão (ex: (P -> Q), (R ^ S), etc.)
         List<Expressao> expList = new ArrayList<>();
@@ -52,6 +54,10 @@ public class Main {
                     expr = new Conjuncao(new Variavel(var1), new Variavel(var2));
                 } else if (operador.equals("|")) {
                     expr = new Disjuncao(new Variavel(var1), new Variavel(var2));
+                } else if (operador.equals("<->")) {
+                    expr = new Bicondicional(new Variavel(var1), new Variavel(var2));
+                } else if (operador.equals("V")) {
+                    expr = new DisjuncaoEx(new Variavel(var1), new Variavel(var2));
                 } else {
                     System.out.println("Operador inválido: " + operador);
                     continue;
